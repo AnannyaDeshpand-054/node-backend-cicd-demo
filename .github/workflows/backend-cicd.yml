@@ -1,0 +1,63 @@
+name: Backend CI/CD (Production)
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    name: Build, Test & Deploy Backend
+    runs-on: ubuntu-latest
+
+    environment: production
+
+    steps:
+      # 1️⃣ Checkout source code
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 2️⃣ Set up Node.js
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          cache: 'npm'
+
+      # 3️⃣ Install dependencies
+      - name: Install dependencies
+        run: npm install
+
+      # 4️⃣ Run tests (CI)
+      - name: Run tests
+        run: npm test
+
+      # 5️⃣ Deploy to Backend EC2 via SSH
+      - name: Deploy to EC2
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            set -e
+
+            echo "Moving to backend directory"
+            cd /var/www/backend
+
+            echo "Pulling latest code"
+            git pull origin main
+
+            echo "Installing production dependencies"
+            npm install --production
+
+            echo "Running DB migrations"
+            npm run migrate
+
+            echo "Restarting backend service"
+            pm2 restart backend-app
+
+            echo "Health check"
+            curl -f http://localhost:3000/health
+
+            echo "Deployment successful"
