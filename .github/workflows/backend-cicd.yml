@@ -10,7 +10,7 @@ jobs:
     name: Build, Test & Deploy Backend
     runs-on: ubuntu-latest
 
-    environment: production
+  
 
     steps:
       # 1️⃣ Checkout source code
