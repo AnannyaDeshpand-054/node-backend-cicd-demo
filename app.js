@@ -5,7 +5,7 @@ const PORT = process.env.PORT || 3000;
 
 // Home route
 app.get('/', (req, res) => {
-  res.send('Node.js Backend CI/CD Demo is working smoothly !!🚀');
+  res.send('Node.js Backend  Demo is working smoothly !!🚀');
 });
 
 // Health check route
