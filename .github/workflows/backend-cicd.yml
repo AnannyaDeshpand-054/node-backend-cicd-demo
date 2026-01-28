@@ -51,8 +51,6 @@ jobs:
             echo "Installing production dependencies"
             npm install --production
 
-            echo "Running DB migrations"
-            npm run migrate
 
             echo "Restarting backend service"
             pm2 restart backend-app
