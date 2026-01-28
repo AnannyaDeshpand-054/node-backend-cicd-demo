@@ -55,7 +55,11 @@ jobs:
             echo "Restarting backend service"
             pm2 restart backend-app
 
+            echo "Waiting for app to start"
+            sleep 5
+
             echo "Health check"
             curl -f http://localhost:3000/health
+
 
             echo "Deployment successful"
